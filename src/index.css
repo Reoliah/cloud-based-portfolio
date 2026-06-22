@@ -1,0 +1,81 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@font-face {
+  font-family: "Big Shoulders";
+  src: url("./assets/fonts/BigShoulders-VariableFont_opsz\,wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("./assets/fonts/Inter-VariableFont_opsz\,wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DM Sans";
+  src: url("./assets/fonts/DMSans-VariableFont_opsz\,wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  /* This maps to font-display */
+  --font-display: "Inter", sans-serif;
+  --font-body: "DM Sans", sans-serif;
+  --font-header: "Big Shoulders", sans-serif;
+
+  /* Breakpoint */
+  --breakpoint-lg: 1200px;
+  --breakpoint-md: 810px;
+
+  /* Your Light Mode Colors */
+  --color-primary-light: #2563eb;
+  --color-background-light: #dee2e6;
+  --color-surface-light: #ffffff;
+  --color-copy-light: #111827;
+
+  /* Your Dark Mode Colors (Neon Magenta!) */
+  --color-primary-dark: #e81cff;
+  --color-background-dark: #121212;
+  --color-surface-dark: #1e1e1e;
+  --color-copy-dark: #f3f4f6;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-background-light);
+  color: var(--color-copy-light);
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+/* Dark mode override */
+.dark body {
+  background-color: var(--color-background-dark);
+  color: var(--color-copy-dark);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary-light);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary-dark);
+}

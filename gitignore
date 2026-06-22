@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Environment Variables (CRITICAL)
+.env
+.env.local
+.env.production
+.env.development
+
+# Production Builds
+dist/
+build/
+
+# Local Upload Staging (Optional)
+# Uncomment the line below if you don't want your local test upload images pushed to GitHub
+# public/assets/

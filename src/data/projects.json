@@ -1,0 +1,80 @@
+[
+  {
+    "id": "quicksight",
+    "title": "Visualize data with QuickSight",
+    "image": "/assets/projects/quicksight/1781274522322-Screenshot-2025-06-13-212447.png",
+    "date": "2026-06-12",
+    "link": "/projects/quicksight",
+    "images": [
+      "/assets/projects/quicksight/1781274522322-Screenshot-2025-06-13-212447.png",
+      "/assets/projects/quicksight/1781274522323-Screenshot-2025-06-13-211706.png",
+      "/assets/projects/quicksight/1781274522329-Screenshot-2025-06-13-203034.png",
+      "/assets/projects/quicksight/1781274522333-Screenshot-2025-06-13-201604.png",
+      "/assets/projects/quicksight/1781274522340-Screenshot-2025-06-13-200855.png",
+      "/assets/projects/quicksight/1781274522353-Screenshot-2025-06-13-195713.png"
+    ],
+    "description": "In this project, I had to understand how QuickSight integrates with AWS services and how it enables fast, interactive dashboards. I learned how to connect data sources like S3 buckets or CSV files and prepare datasets for analysis. This involved cleaning and transforming data, setting up calculated fields, and understanding schema relationships. The foundation for building meaningful visualizations was laid on getting comfortable with the QuickSight interface and its capabilities.",
+    "techStack": [
+      "AWS"
+    ],
+    "externalUrl": ""
+  },
+  {
+    "id": "iam-security",
+    "title": "Cloud Security with AWS IAM",
+    "image": "/assets/projects/iam-security/1781274171003-Screenshot-2025-08-27-142849.png",
+    "date": "2026-06-12",
+    "link": "/projects/iam-security",
+    "images": [
+      "/assets/projects/iam-security/1781274171003-Screenshot-2025-08-27-142849.png",
+      "/assets/projects/iam-security/1781274171006-Screenshot-2025-08-27-142801.png",
+      "/assets/projects/iam-security/1781274171013-Screenshot-2025-08-27-142719.png",
+      "/assets/projects/iam-security/1781274171016-Screenshot-2025-08-27-142629.png",
+      "/assets/projects/iam-security/1781274171017-Screenshot-2025-08-27-142406.png",
+      "/assets/projects/iam-security/1781274171019-Screenshot-2025-08-27-142211.png"
+    ],
+    "description": "This project showed me the benefit of the principle of least privilege. This principle state that only give access to what is needed when it is needed. I created different instances in this project and created an IAM user for an intern account. Setting this project up was fun and I understood why security in the cloud is paramount not only for resources safety but to avoid over complication, ensure traceability and accountability.",
+    "techStack": [
+      "AWS"
+    ],
+    "externalUrl": ""
+  },
+  {
+    "id": "serverless-ingestion",
+    "title": "Serverless Sport Odds Ingestion Pipeline",
+    "description": "For this project, I designed a **real-time ingestion architecture** for high-throughput data (like live sports odds) using AWS API Gateway, SQS, Lambda, and DynamoDB. To keep iteration fast and cost-free, the entire environment was built and tested locally using LocalStack and Terraform.\r\nI focused on building this to strict production standards, prioritising cost-efficiency, fault tolerance, and security:\r\n\r\nI bypassed the Lambda Proxy anti-pattern. Instead, I configured API Gateway to use Velocity Template Language (VTL) to format and route incoming HTTP payloads directly into SQS, resulting in lower latency, fewer failure points, and zero compute costs just to move data.\r\n\r\nI implemented Dead Letter Queues (DLQs) with strict retry policies. If a malformed payload crashes the processing Lambda, SQS catches the failure, retries 3 times, and automatically routes it to the DLQ for human review, preventing infinite retry loops.\r\n\r\nEvery component is governed by custom, granular IAM policies in Terraform, ensuring Lambda can only read from specific queues and write to specific table ARNs.\r\n\r\nI fixed an API Gateway to SQS integration by debugging LocalStack's routing issue; which made sure that the deployment stage hit the right endpoint so that POST requests could be successfully logged. On the backend, I had to figure out how to use AWS SDK type-casting rules. For example, I had to set up Python's `json.loads` to automatically convert standard floats into `Decimal` types so that DynamoDB's strict numeric schema requirements could be met.\r\n\r\nIt was a great experience learning how data actually flows through decoupled cloud systems.\r\nYou can check out my Terraform configurations and Python logic in the repository attached",
+    "techStack": [
+      "AWS Localstack",
+      "Terraform"
+    ],
+    "externalUrl": "https://github.com/reoliah/aws-localstack-odds-pipeline",
+    "image": "/assets/projects/serverless-ingestion/1781275992744-Screenshot-2026-04-02-122603.png",
+    "images": [
+      "/assets/projects/serverless-ingestion/1781275992744-Screenshot-2026-04-02-122603.png",
+      "/assets/projects/serverless-ingestion/1781275992745-Screenshot-2026-04-02-122626.png",
+      "/assets/projects/serverless-ingestion/1781275992767-Screenshot-2026-04-02-140538.png",
+      "/assets/projects/serverless-ingestion/1781275992768-Screenshot-2026-04-02-140631.png",
+      "/assets/projects/serverless-ingestion/1781275992768-Screenshot-2026-04-02-140701.png",
+      "/assets/projects/serverless-ingestion/1781275992770-Screenshot-2026-04-02-144450.png"
+    ],
+    "date": "2026-06-12",
+    "link": "/projects/serverless-ingestion"
+  },
+  {
+    "id": "iot-fanout",
+    "title": "AWS IoT Fanout Safety Pipeline",
+    "description": "The goal was to simulate an industrial environment (e.g., a manufacturing plant) in which sensors constantly upload telemetry. The system needed to store that data historically but also instantly scan it for critical safety alerts without one process slowing down the other. \r\n\r\nHere is how I built it: \r\n* Storage-Triggered Ingestion: When a sensor drops a JSON log into S3, it instantly fires an `ObjectCreated  'event'. No need to worry about paying for an always-on API.\r\n* The SNS -> SQS Fanout: The S3 event hits an SNS topic, which acts as a router. SNS symmetrically clones the payload and drops it into two independent SQS queues simultaneously. \r\n* Decoupled Parallel Workers: Worker A (Lambda) unwraps the payload, downloads the raw file, and saves the data to DynamoDB. - Worker B (Lambda) ignores the database entirely, scans the file for temperature anomalies, and fires safety alerts. \r\n\r\nThis ensures true decoupling because SNS/SQS physically separates the database worker and the alert worker; if the database goes down or gets throttled, the safety alerts still fire immediately. Plus, the system is horizontally infinitely scalable. I can add a new predictive maintenance worker queue tomorrow without touching the existing architecture. \r\n\r\nDeep-diving into IAM Resource Policies (allowing S3 to talk to SNS and SNS to talk to SQS) and handling deeply nested AWS event payloads (`SQS -> SNS -> S3 Wrapper`) were a great way to understand how distributed cloud systems actually communicate securely. ",
+    "techStack": [],
+    "externalUrl": "",
+    "image": "/assets/projects/iot-fanout/1781276278778-Screenshot-2026-04-07-081012.png",
+    "images": [
+      "/assets/projects/iot-fanout/1781276278778-Screenshot-2026-04-07-081012.png",
+      "/assets/projects/iot-fanout/1781276278781-Screenshot-2026-04-07-081103.png",
+      "/assets/projects/iot-fanout/1781276278784-Screenshot-2026-04-07-083409.png",
+      "/assets/projects/iot-fanout/1781276278784-Screenshot-2026-04-07-084811.png",
+      "/assets/projects/iot-fanout/1781276278826-Screenshot-2026-04-07-092856.png"
+    ],
+    "date": "2026-06-12",
+    "link": "/projects/iot-fanout"
+  }
+]

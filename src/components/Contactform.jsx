@@ -1,34 +1,93 @@
+import { useState } from "react";
+import { FiCheck, FiX, FiAlertTriangle } from "react-icons/fi";
+
 export default function Contactform() {
-    const handleSubmit = (e) => {
+  // States: 'idle' | 'loading' | 'success' | 'error' | 'network'
+  const [status, setStatus] = useState("idle");
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setStatus("loading"); // Lock button immediately so they can't double-click
     const form = e.target;
-    const name = form.name.value.trim();
-    const email = form.email.value.trim();
-    const message = form.message.value.trim();
-    const mailto = `mailto:thedev.isaiah@gmail.com?subject=${encodeURIComponent(
-      "Contact from " + name
-    )}&body=${encodeURIComponent(
-      message + "\n\nFrom: " + name + " <" + email + ">"
-    )}`;
-    window.location.href = mailto;
-    form.reset();
+    const data = new FormData(form);
+
+    try {
+      const response = await fetch("https://formspree.io/f/xwvdpyyp", {
+        method: "POST",
+        body: data,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        setStatus("success");
+        form.reset();
+        setTimeout(() => setStatus("idle"), 4000); // Revert to "Send" after 4s
+      } else {
+        setStatus("error");
+        setTimeout(() => setStatus("idle"), 4000);
+      }
+    } catch (error) {
+      setStatus("network");
+      setTimeout(() => setStatus("idle"), 4000);
+    }
   };
-  
+
+  // Helper function that acts as the "Wardrobe" for your button depending on its mood
+  const getButtonUI = () => {
+    switch (status) {
+      case "loading":
+        return {
+          text: "Sending...",
+          icon: null,
+          style: "bg-gray-500 text-white cursor-wait opacity-80"
+        };
+      case "success":
+        return {
+          text: "Sent!",
+          icon: <FiCheck className="text-lg stroke-[3]" />,
+          style: "bg-green-600 text-white font-bold tracking-wider"
+        };
+      case "error":
+        return {
+          text: "Failed",
+          icon: <FiX className="text-lg stroke-[3]" />,
+          style: "bg-red-600 text-white font-bold tracking-wider"
+        };
+      case "network":
+        return {
+          text: "Network Issue",
+          icon: <FiAlertTriangle className="text-lg stroke-[2.5]" />,
+          style: "bg-yellow-500 text-black font-bold tracking-wider"
+        };
+      default: // 'idle'
+        return {
+          text: "Send",
+          icon: null,
+          style: "bg-primary-light dark:bg-primary-dark hover:bg-gray-400 dark:hover:bg-gray-700 text-white hover:text-black font-medium"
+        };
+    }
+  };
+
+  const btn = getButtonUI();
+
   return (
     <section>
-        <div className="relative ">
+      <div className="relative">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16">
           <div className="flex flex-col gap-6">
-            <p className="text-copy-light font-display font-normal dark:text-copy-dark/80  leading-[1.7] text-[18px]">
+            <p className="text-copy-light font-display font-normal dark:text-copy-dark/80 leading-[1.7] text-[18px]">
               Feel free to contact me.
             </p>
             <span>
-              <p className="font-display text-[14px]">
-              Ibadan, OY. NIGERIA
-            </p>
-            <a href="mailto:thedev.isaiah@gmail.com" className="font-display text-[14px] text-blue-600 hover:text-blue-700 hover:underline transition-colors duration-300">
-              thedev.isaiah@gmail.com
-            </a>
+              <p className="font-display text-[14px]">Ibadan, OY. NIGERIA</p>
+              <a
+                href="mailto:thedev.isaiah@gmail.com"
+                className="font-display text-[14px] text-blue-600 hover:text-blue-700 hover:underline transition-colors duration-300"
+              >
+                thedev.isaiah@gmail.com
+              </a>
             </span>
           </div>
           <div>
@@ -57,14 +116,19 @@ export default function Contactform() {
                   required
                 />
               </div>
-              <button type="submit" className="w-full bg-primary-light dark:bg-primary-dark hover:bg-gray-400 dark:hover:bg-gray-700 text-white hover:text-black font-body font-medium text-[13px] py-3 rounded-lg">
-                Send
+
+              <button
+                type="submit"
+                disabled={status !== "idle"}
+                className={`w-full py-3 rounded-lg font-body text-[13px] transition-all duration-300 flex items-center justify-center gap-2 select-none ${btn.style}`}
+              >
+                {btn.icon}
+                <span>{btn.text}</span>
               </button>
             </form>
           </div>
         </div>
       </div>
     </section>
-    
-  )
+  );
 }

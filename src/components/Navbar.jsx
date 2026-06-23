@@ -50,7 +50,7 @@ export default function Navbar({ isDarkMode, toggleTheme }) {
                   {navLinks.map((link) => (
                     <li key={link}>
                       <Link
-                        href={link === "Home" ? "/" : `/${link.toLowerCase()}`}
+                        href={link === "Home" ? "/" : `/#${link.toLowerCase()}`}
                         onClick={() => setIsOpen(false)} // Close menu when clicked
                         className="block px-6 py-2 font-header font-bold uppercase text-[30px] text-copy-light dark:text-copy-dark hover:text-primary-light dark:hover:text-primary-dark transition-colors"
                       >

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiToggleLeft, FiToggleRight, FiSun, FiMoon } from "react-icons/fi";
 import { HiOutlineMenuAlt1, HiX } from "react-icons/hi";
+import { Link } from "react-router-dom";
 
 export default function Navbar({ isDarkMode, toggleTheme }) {
   const [isOpen, setIsOpen] = useState(false);

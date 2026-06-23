@@ -9,7 +9,7 @@ export default function ProjectDetail() {
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
-    fetch("/api/projects")
+    fetch(`${import.meta.env.VITE_API_URL}/api/projects`)
       .then((r) => r.json())
       .then((data) => {
         const sortedProjects = data.sort(
@@ -65,14 +65,14 @@ export default function ProjectDetail() {
             </p>
             {project.externalUrl && (
               <p className="mb-4">
-                <a
-                  href={project.externalUrl}
+                <Link
+                  to={project.externalUrl}
                   target="_blank"
                   rel="noreferrer"
                   className="font-body text-blue-600 dark:text-blue-400 underline"
                 >
                   Visit project link
-                </a>
+                </Link>
               </p>
             )}
             {project.techStack && project.techStack.length > 0 && (
@@ -110,12 +110,12 @@ export default function ProjectDetail() {
       </div>
       <div className="mt-16 flex flex-col gap-6">
         <div className="flex justify-between">
-          <a href="/home" className="font-body font-semibold uppercase text-sm md:text-md hover:text-primary-light dark:hover:text-primary-dark transition-colors duration-300 ">
+          <Link to="/" className="font-body font-semibold uppercase text-sm md:text-md hover:text-primary-light dark:hover:text-primary-dark transition-colors duration-300 ">
             Home
-          </a>
-          <a href="/projects" className="font-body font-semibold uppercase text-sm md:text-md hover:text-primary-light dark:hover:text-primary-dark transition-colors duration-300 ">
+          </Link>
+          <Link to="/projects" className="font-body font-semibold uppercase text-sm md:text-md hover:text-primary-light dark:hover:text-primary-dark transition-colors duration-300 ">
             View all projects
-          </a>
+          </Link>
         </div>
         <div className="w-full h-[1px] bg-background-dark dark:bg-background-light"></div>
 

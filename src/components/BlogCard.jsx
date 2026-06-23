@@ -18,7 +18,7 @@ export default function BlogCard({ start, end }) {
   const [recentBlogs, setRecentBlogs] = useState([]);
 
   useEffect(() => {
-    fetch("/api/blogs")
+    fetch(`${import.meta.env.VITE_API_URL}/api/blogs`)
       .then((file) => file.json())
       .then((data) => {
         const sorted = data

@@ -5,7 +5,7 @@ export default function ProjectCard({ start, end }) {
   const [recentProjects, setRecentProjects] = useState([]);
 
   useEffect(() => {
-    fetch("/api/projects")
+    fetch(`${import.meta.env.VITE_API_URL}/api/projects`)
       .then((file) => file.json())
       .then((data) => {
         const sorted = data

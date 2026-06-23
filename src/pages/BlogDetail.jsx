@@ -9,7 +9,7 @@ export default function BlogDetail() {
   const [blogs, setBlogs] = useState([]);
 
   useEffect(() => {
-    fetch("/api/blogs")
+    fetch(`${import.meta.env.VITE_API_URL}/api/blogs`)
       .then((r) => r.json())
       .then((data) => {
         const sortedBlogs = data.sort(
@@ -86,7 +86,7 @@ export default function BlogDetail() {
       <div className="mt-16 flex flex-col gap-6">
         <div className="flex justify-between">
           <Link
-            to="/home"
+            to="/"
             className="font-body font-semibold uppercase text-sm md:text-md hover:text-primary-light dark:hover:text-primary-dark transition-colors duration-300"
           >
             Home

@@ -308,20 +308,20 @@ resource "aws_s3_bucket_public_access_block" "data" {
   restrict_public_buckets = false
 }
 
-# CORS rules ensure your frontend can cleanly fetch and read images directly from S3
+# CORS rules ensure frontend can cleanly fetch and read images directly from S3
 resource "aws_s3_bucket_cors_configuration" "data" {
   bucket = aws_s3_bucket.data.id
 
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["GET", "HEAD"]
-    allowed_origins = ["*"] # Can be restricted to your specific CloudFront URL later
+    allowed_origins = ["*"] # Can be restricted to specific CloudFront URL later
     expose_headers  = ["ETag"]
     max_age_seconds = 3000
   }
 }
 
-# Policy allowing the public to view files inside the bucket (required for isaiah-portfolio pictures)
+# Policy allowing the public to view files inside the bucket (required for portfolio pictures)
 resource "aws_s3_bucket_policy" "public_read" {
   bucket = aws_s3_bucket.data.id
   depends_on = [aws_s3_bucket_public_access_block.data]

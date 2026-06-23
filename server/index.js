@@ -46,11 +46,11 @@ const writeS3JsonArray = async (key, data) => {
 
 // Helper function to recursively delete asset directories inside an S3 Bucket
 const deleteS3Folder = async (folderPrefix) => {
-  // In a complete AWS SDK implementation, you would list objects with the prefix and delete them.
-  // For safety and conciseness, we will focus on updating the target references directly.
+  // To list objects with the prefix and delete them in a complete AWS SDK implementation.
+  // Also update the target references directly for safety and conciseness.
 };
 
-// 2. Configure Multer-S3 for direct memory streams to AWS
+// 2. Multer-S3 configuration for direct memory streams to AWS
 const createS3Storage = (folderName) =>
   multerS3({
     s3: s3,
@@ -68,7 +68,7 @@ const createS3Storage = (folderName) =>
 const projectUpload = multer({ storage: createS3Storage("projects") });
 const blogUpload = multer({ storage: createS3Storage("blogs") });
 
-// GET ROUTES (Now streaming straight from S3 data keys)
+// GET ROUTES (streams straight from S3 data keys)
 app.get("/api/projects", async (req, res) => {
   try {
     const data = await readS3JsonArray("data/projects.json");
@@ -103,13 +103,13 @@ app.post("/api/projects", projectUpload.array("images"), async (req, res) => {
     if (oldId && oldId !== id) {
       const oldIndex = data.findIndex((p) => p.id === oldId);
       if (oldIndex >= 0) data.splice(oldIndex, 1);
-      // Optional: Trigger background deletion of oldId object prefixes here
+      // Trigger background deletion of oldId object prefixes here
     }
 
     const existingIndex = data.findIndex((p) => p.id === id);
     const existing = existingIndex >= 0 ? data[existingIndex] : {};
 
-    // 🌟 Multer-S3 automatically returns the raw public CloudFront/S3 url in f.location!
+    // Multer-S3 automatically returns the raw public CloudFront/S3 url in f.location!
     const uploadedImages = (req.files || []).map((f) => f.location);
 
     const existingImages = existing.images || [];

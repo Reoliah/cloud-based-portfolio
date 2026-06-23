@@ -34,10 +34,10 @@ export default function Admin() {
 
   const fetchItems = async () => {
     try {
-      const pRes = await fetch("/api/projects");
+      const pRes = await fetch(`${import.meta.env.VITE_API_URL}/api/projects`);
       if (pRes.ok) setProjects(await pRes.json());
 
-      const bRes = await fetch("/api/blogs");
+      const bRes = await fetch(`${import.meta.env.VITE_API_URL}/api/blogs`);
       if (bRes.ok) setBlogs(await bRes.json());
     } catch (err) {
       console.error("Error fetching admin lists:", err);

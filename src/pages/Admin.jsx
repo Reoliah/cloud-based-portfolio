@@ -68,8 +68,13 @@ export default function Admin() {
 
   const submitForm = async (endpoint, formData) => {
     setStatus({ loading: true });
+
+    // Grab your Render URL from Vercel's environment variables
+    const baseUrl = import.meta.env.VITE_API_URL || "";
+    const targetUrl = endpoint.startsWith("http") ? endpoint : `${baseUrl}${endpoint}`;
+
     try {
-      const res = await fetch(endpoint, {
+      const res = await fetch(targetUrl, { 
         method: "POST",
         body: formData,
         headers: {

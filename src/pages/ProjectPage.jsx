@@ -1,5 +1,5 @@
 import PageHero from "../components/PageHero";
-import ProjectCard from "../components/Projectcard";
+import ProjectCard from "../components/ProjectCard";
 import ContactForm from "../components/Contactform";
 
 

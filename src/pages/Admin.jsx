@@ -205,7 +205,7 @@ export default function Admin() {
     setStatus(null);
   };
 
-  // --- 🌟 NEW: ARRAY MANIPULATION HANDLING UTILITIES ---
+  //  ARRAY MANIPULATION HANDLING UTILITIES 
   const moveProjectFile = (index, direction) => {
     if (!projectFiles) return;
     const updatedFiles = [...projectFiles];

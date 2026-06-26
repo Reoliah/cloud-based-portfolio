@@ -91,6 +91,11 @@ app.get("/api/blogs", async (req, res) => {
 
 // POST PROJECT ROUTE
 app.post("/api/projects", projectUpload.array("images"), async (req, res) => {
+  console.log("=== PROJECT AUTH DEBUG ===");
+  console.log("Header Received:", JSON.stringify(req.headers["x-admin-password"]));
+  console.log("Expected ENV:", JSON.stringify(process.env.VITE_ADMIN_PASSWORD));
+  console.log("Match Result:", req.headers["x-admin-password"] === process.env.VITE_ADMIN_PASSWORD);
+  console.log("==========================");
   const auth = req.headers["x-admin-password"];
   if (auth !== ADMIN_PASSWORD) return res.status(401).json({ error: "Unauthorized" });
 

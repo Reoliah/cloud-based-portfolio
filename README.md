@@ -61,9 +61,12 @@ npm install
 Create a `.env` file in the root directory
 ```Code Snippet
 PORT=4000
+VITE_API_URL=http://localhost:4000
 VITE_ADMIN_PASSWORD=your_secure_password
 AWS_REGION=us-east-1
 AWS_STORAGE_BUCKET_NAME=your_s3_bucket_name
+AWS_ACCESS_KEY_ID=your_iam_public_key
+AWS_SECRET_ACCESS_KEY=your_iam_secret_key
 ```
 
 3. **Command Verification (Docker)**
@@ -72,30 +75,30 @@ Build and execute the isolated container environment locally before deployment
 docker build -t portfolio-backend:local
 docker run -p 4000:4000 --env-file .env portfolio-backend:local
 ```
-4. **Infrastructure Provisioning (Terraform)**
-To deploy the AWS cloud infrastructure stack
+# Production Deployment Guide (PaaS Model)
+1. **Persistent Storage Setup (AWS S3)**
+* Provision a standard Amazon S3 bucket with public `GetObject` read permissions.
+* Generate an AWS IAM User strictly scoped with `s3:PutObject`, `s3:GetObject`, and `s3:DeleteObject` permissions for the target bucket.
+
+2. **Backend Compute Deployment (Render)** 
+* Connect the repository to [Render](https://render.com) as a **Web service**.
+* Render automatically detects the root `Dockerfile`.
+* Populate the service **Environment Variables** with you `.env` keys (setting `PORT=4000`).
+
+3. **Frontend UI Deployment (Vercel)**
+* Import the repository into [Vercel](https://vercel.com) as a Vite framework project.
+* Under **Environment Variables**, inject:
+ - `VITE_API_URL` = `httpa://your-render-app.onrender.com` *(No trailing slash)*
+ - `VITE_ADMIN_PASSWORD` = `your_secure_password`
+* Trigger deployment. Continuous Delivery is subsequently handled natively via Github Webhook Integration upon pushed to the `master` branch.
+
+# NOTE
+This project was originally architected and validated as an enterprise AWS ECS Fargate deployment utilizing Application Load Balancers, CloudFront Reverse Proxies, and custom VPC networking provisioned fully through Terraform HCL.
+
+The project was eventually transformed to Vercel and Render hosting platforms to eliminate incuring costs.
+
+To review the original Infrastructure as Code configurations, switch to the dedicated branch:
 ```bash
-cd terraform
-terraform init
-terraform plan
-terraform apply
-```
-# AWS Setup
-1. **AWS account configuration**
-```bash
-cd ..
-aws configure
-```
-submit required information
-2. **Repository Creation and Docker deployment**
-```bash
-aws ecr create-repository --repository-name your-repository-name
-aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin your-repository-name
-docker tag portfolio-backend:local your-repository-name:latest
-docker push your-repositort-name:latest
-```
-3. **Build and Pass Static media to s3 bucket**
-```bash
-npm run build
-aws s3 sync dist/ s3://your-frontend-hosting-name --delete
+git fetch origin
+git checkout legacy-aws-cloud-portfolio
 ```
